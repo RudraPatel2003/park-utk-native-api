@@ -9,6 +9,24 @@ env.config();
 const SUPABASE_URL = process.env.SUPABASE_URL as string;
 const SUPABASE_KEY = process.env.SUPABASE_KEY as string;
 
+const ranges = [
+  "0 - 5",
+  "5 - 10",
+  "10 - 20",
+  "20 - 40",
+  "40-99",
+  "100+",
+] as const;
+
+const parkingGarages = [
+  "11th Street (G13)",
+  "Neyland Drive (G10)",
+  "Terrace Avenue (G17)",
+  "Volunteer Boulevard (G16)",
+  "Volunteer Hall (G15)",
+  "White Avenue (G12)",
+] as const;
+
 const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_KEY);
 
 const app = express();
@@ -25,7 +43,8 @@ app.get("/reports", async (req, res) => {
 
   let data, error;
 
-  if (typeof hoursAgo === "string") {
+  const hoursAgoQueryParam = typeof hoursAgo === "string";
+  if (hoursAgoQueryParam) {
     // fetch reports from the last x hours
     const hours = parseInt(hoursAgo);
     const dateFilter = dayjs().subtract(hours, "hours").toISOString();
@@ -37,7 +56,7 @@ app.get("/reports", async (req, res) => {
   } else {
     ({ data, error } = await supabase.from("Reports").select());
   }
-
+  
   if (error) {
     return res.status(400).json({ success: false, error: error.message });
   }
@@ -48,17 +67,22 @@ app.get("/reports", async (req, res) => {
 app.post("/reports", async (req, res) => {
   const { parking_garage, reported_range } = req.body;
 
+  const errors: string[] = [];
   if (!parking_garage || !reported_range) {
-    return res
-      .status(400)
-      .json({ success: false, error: "Missing required fields" });
+    errors.push("Missing required fields");
   }
 
   const isTwoKeys = Object.keys(req.body).length === 2;
   if (!isTwoKeys) {
-    return res
-      .status(400)
-      .json({ success: false, error: "Too many fields provided" });
+    errors.push("Too many fields provided");
+  }
+
+  if (!parkingGarages.includes(parking_garage)) {
+    errors.push("Invalid parking garage");
+  }
+
+  if (!ranges.includes(reported_range)) {
+    errors.push("Invalid reported range");
   }
 
   const { error } = await supabase
@@ -66,7 +90,11 @@ app.post("/reports", async (req, res) => {
     .insert({ parking_garage, reported_range });
 
   if (error) {
-    return res.status(400).json({ success: false, error: error.message });
+    errors.push(error.message);
+  }
+
+  if (errors.length) {
+    return res.status(400).json({ success: false, errors });
   }
 
   return res
