@@ -74,15 +74,15 @@ app.post("/reports", async (req, res) => {
 
   const isTwoKeys = Object.keys(req.body).length === 2;
   if (!isTwoKeys) {
-    errors.push("Too many fields provided");
+    errors.push("Must provide only 2 fields");
   }
 
   if (!parkingGarages.includes(parking_garage)) {
-    errors.push("Invalid parking garage");
+    errors.push("Invalid parking_garage");
   }
 
   if (!ranges.includes(reported_range)) {
-    errors.push("Invalid reported range");
+    errors.push("Invalid reported_range");
   }
 
   const { error } = await supabase
