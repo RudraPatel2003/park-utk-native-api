@@ -56,7 +56,41 @@ app.get("/reports", async (req, res) => {
   } else {
     ({ data, error } = await supabase.from("Reports").select());
   }
-  
+
+  if (error) {
+    return res.status(400).json({ success: false, error: error.message });
+  }
+
+  return res.status(200).json({ success: true, data: data });
+});
+
+app.get("/reports/:garage", async (req, res) => {
+  const { garage } = req.params;
+  const { mostRecent } = req.query;
+
+  if (!parkingGarages.includes(garage as any)) {
+    return res.status(400).json({ success: false, error: "Invalid garage" });
+  }
+
+  let data, error;
+
+  const mostRecentQueryParam = typeof mostRecent === "string";
+  if (mostRecentQueryParam) {
+    // fetch most recent report for a specific garage
+    ({ data, error } = await supabase
+      .from("Reports")
+      .select()
+      .eq("parking_garage", garage)
+      .order("created_at", { ascending: false })
+      .limit(1));
+  } else {
+    // fetch all reports for a specific garage
+    ({ data, error } = await supabase
+      .from("Reports")
+      .select()
+      .eq("parking_garage", garage));
+  }
+
   if (error) {
     return res.status(400).json({ success: false, error: error.message });
   }
