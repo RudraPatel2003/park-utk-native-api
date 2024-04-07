@@ -6,7 +6,7 @@
   <br>
 </h1>
 
-<h2 align="center">The backend for <a href="https://github.com/RudraPatel2003/park-utk-native" target="_blank" rel="noreferrer">ParkUTK</a>. Built with <a href="https://expressjs.com/" target="_blank" rel="noreferrer">Express</a>, <a href="https://supabase.com/" target="_blank" rel="noreferrer">Supabase</a>, and <a href="https://www.docker.com/" target="_blank" rel="noreferrer">Docker</a>, hosted on <a href="https://cloud.google.com/run" target="_blank" rel="noreferrer">Google Cloud Run</a> and automatically deployed with <a href="https://cloud.google.com/build" target="_blank" rel="noreferrer">Google Cloud Build</a>.
+<h2 align="center">The backend for <a href="https://github.com/RudraPatel2003/park-utk-native" target="_blank" rel="noreferrer">ParkUTK</a>. Built with <a href="https://expressjs.com/" target="_blank" rel="noreferrer">Express</a>, <a href="https://supabase.com/" target="_blank" rel="noreferrer">Supabase</a>, and <a href="https://www.docker.com/" target="_blank" rel="noreferrer">Docker</a>, hosted on <a href="https://cloud.google.com/run" target="_blank" rel="noreferrer">Google Cloud Run</a>, and automatically deployed with <a href="https://cloud.google.com/build" target="_blank" rel="noreferrer">Google Cloud Build</a>.
 
 ## About
 
